@@ -2,6 +2,7 @@
 let earthquakeDataUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
 
 // Fetch and process the earthquake data using D3
+// d3 is a JavaScript library for producing dynamic, interactive data visualizations in web browsers
 d3.json(earthquakeDataUrl).then(earthquakeData => {
     processEarthquakeData(earthquakeData.features);
 });
@@ -19,6 +20,8 @@ function processEarthquakeData(earthquakeFeatures) {
     }
 
     // Function to determine marker color based on earthquake depth
+    // The depth of the earthquake is the third coordinate in the geometry.coordinates array
+    // The ? : operator is a ternary operator that is used as a shorthand for if...else statements. This only works for simple if...else statements in JavaScript.
     function calculateMarkerColor(depth) {
         return depth > 90 ? '#FF5F65' :
                depth > 70 ? '#FCA35D' :
@@ -29,7 +32,7 @@ function processEarthquakeData(earthquakeFeatures) {
     }
 
     // Create a GeoJSON layer containing the features array on the earthquakeData object
-    // Run the onEachEarthquakeFeature function once for each piece of data in the array
+    // Run the EarthquakeFeature function once for each piece of data in the array
     let earthquakeLayer = L.geoJSON(earthquakeFeatures, {
         pointToLayer: function (feature, latlng) {
             return L.circleMarker(latlng, {
@@ -70,16 +73,14 @@ function createMap(earthquakeLayer) {
         Earthquakes: earthquakeLayer
     };
 
-    // Create our map, giving it the streetMapLayer and earthquakeLayer layers to display on load
+    // Create map, giving it the streetMapLayer and earthquakeLayer as layers to display
     let earthquakeMap = L.map("map", {
         center: [37.09, -95.71],
         zoom: 5,
         layers: [streetMapLayer, earthquakeLayer]
     });
 
-    // Create a layer control
-    // Pass in our baseMapLayers and overlayMapLayers
-    // Add the layer control to the map
+    // Create a layer control, pass in our baseMapLayers and overlayMapLayers, and add the layer control to the map
     L.control.layers(baseMapLayers, overlayMapLayers, {
         collapsed: false
     }).addTo(earthquakeMap);
@@ -102,6 +103,6 @@ function createMap(earthquakeLayer) {
         return legendDiv;
     };
 
-    // Adding legend to the map
+    // Lastly always add it to the map
     legend.addTo(earthquakeMap);
 }
